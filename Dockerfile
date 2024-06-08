@@ -90,6 +90,7 @@ RUN \
     libuuid \
     libwebsockets \
     libxml2 \
+    openjdk17-jre \
     openrc \
     protobuf-c \
     shadow \
@@ -97,6 +98,8 @@ RUN \
     sqlite-libs \
     udev-init-scripts-openrc && \
   rm /etc/avahi/services/* &&\
+  curl -o /opt/librespot-java.jar -L \
+    "https://github.com/librespot-org/librespot-java/releases/download/v1.6.3/librespot-api-1.6.3.jar" && \
   sed -i \
     -e 's|\(.*\)\(db_path = "\).\+\(".*\)|\t\2/var/cache/owntone/database.db\3|' \
     -e 's|\(.*\)\(db_backup_path = "\).\+\(".*\)|\t\2/var/cache/owntone/database.bak\3|' \
@@ -113,7 +116,8 @@ RUN \
     /etc/rc.conf && \
   rc-update add syslog boot && \
   rc-update add owntone default && \
-  install -D /dev/null /run/openrc/softlevel
+  install -D /dev/null /run/openrc/softlevel \
+  java -jar /opt/librespot-java.jar \
 
 ENTRYPOINT ["/sbin/init"]
 
